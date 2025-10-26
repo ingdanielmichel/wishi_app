@@ -1,40 +1,59 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../data/repositories/menu_repository_impl.dart';
+import '../../domain/models/category.dart';
+import '../../domain/repositories/menu_repository.dart';
+import '../../domain/usecases/get_categories.dart';
 
-// TODO: Define a state class for the home screen
-// class HomeState {
-//   final bool isDayMenu;
-//   final List<MenuCategory> categories;
-//   HomeState({required this.isDayMenu, required this.categories});
-// }
+// 1. State Class
+class HomeState {
+  final List<MenuCategory> categories;
+  final bool isLoading;
 
-class HomeViewModel extends StateNotifier<AsyncValue<void>> {
-  HomeViewModel() : super() {
-    state = const AsyncValue.data(null);
+  HomeState({this.categories = const [], this.isLoading = true});
+
+  HomeState copyWith({
+    List<MenuCategory>? categories,
+    bool? isLoading,
+  }) {
+    return HomeState(
+      categories: categories ?? this.categories,
+      isLoading: isLoading ?? this.isLoading,
+    );
   }
-
-  // final FirestoreService _firestoreService;
-  // final AnalyticsService _analyticsService;
-
-  // HomeViewModel(this._firestoreService, this._analyticsService) : super(const AsyncValue.loading()) {
-  //   _loadMenu();
-  // }
-
-  // Future<void> _loadMenu() async {
-  //   // TODO: Implement logic to determine if it's day or night
-  //   // and fetch the appropriate menu from Firestore.
-  //   // state = const AsyncValue.loading();
-  //   // try {
-  //   //   final categories = await _firestoreService.getCategories('night_menu');
-  //   //   state = AsyncValue.data(...);
-  //   // } catch (e, s) {
-  //   //   state = AsyncValue.error(e, s);
-  //   // }
-  // }
 }
 
-// TODO: Create the provider for the HomeViewModel
-// final homeViewModelProvider = StateNotifierProvider<HomeViewModel, AsyncValue<void>>((ref) {
-//   final firestoreService = ref.watch(firestoreServiceProvider);
-//   final analyticsService = ref.watch(analyticsServiceProvider);
-//   return HomeViewModel(firestoreService, analyticsService);
-// });
+// 2. Providers
+final menuRepositoryProvider = Provider<MenuRepository>((ref) {
+  return MenuRepositoryImpl();
+});
+
+final getCategoriesProvider = Provider<GetCategories>((ref) {
+  final repository = ref.watch(menuRepositoryProvider);
+  return GetCategories(repository);
+});
+
+// 3. ViewModel
+class HomeViewModel extends StateNotifier<HomeState> {
+  final GetCategories _getCategories;
+
+  HomeViewModel(this._getCategories) : super(HomeState()) {
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final categories = await _getCategories();
+      state = state.copyWith(categories: categories, isLoading: false);
+    } catch (e) {
+      // Handle error appropriately
+      state = state.copyWith(isLoading: false);
+    }
+  }
+}
+
+// 4. ViewModel Provider
+final homeViewModelProvider = StateNotifierProvider<HomeViewModel, HomeState>((ref) {
+  final getCategories = ref.watch(getCategoriesProvider);
+  return HomeViewModel(getCategories);
+});

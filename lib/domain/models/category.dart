@@ -9,7 +9,4 @@ class MenuCategory {
     required this.name,
     required this.order,
   });
-
-  // TODO: Add factory constructor for Firestore data
-  // factory MenuCategory.fromFirestore(DocumentSnapshot doc) { ... }
 }

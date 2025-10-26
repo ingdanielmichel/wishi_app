@@ -1,16 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wishi_app/presentation/views/main_screen.dart';
 
-// TODO: Import the home screen view
-// import 'package:wishi_app/presentation/views/home_screen.dart';
-
-void main() {
-  // TODO: Initialize Firebase
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -25,12 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      // TODO: Set home to HomeScreen
-      home: const Scaffold(
-        body: Center(
-          child: Text('Wishi App'),
-        ),
-      ),
+      home: const MainScreen(),
     );
   }
 }

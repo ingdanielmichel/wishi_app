@@ -17,7 +17,4 @@ class MenuItem {
     required this.available,
     // required this.options,
   });
-
-  // TODO: Add factory constructor for Firestore data
-  // factory MenuItem.fromFirestore(DocumentSnapshot doc) { ... }
 }
