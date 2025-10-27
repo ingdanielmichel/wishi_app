@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>130238802097-8cjteccdvt07ufce7k4m8v5nkb1pprtn.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.130238802097-8cjteccdvt07ufce7k4m8v5nkb1pprtn</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDMhv4UG-LZyY0H7TwIEzMQEi-IKs3FFq8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>130238802097</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.wishiApp</string>
+	<key>PROJECT_ID</key>
+	<string>wishi-f28f3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wishi-f28f3.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:130238802097:ios:eb5b0f68cdc09db6a7da90</string>
+	<key>DATABASE_URL</key>
+	<string>https://wishi-f28f3-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "130238802097",
+    "firebase_url": "https://wishi-f28f3-default-rtdb.firebaseio.com",
+    "project_id": "wishi-f28f3",
+    "storage_bucket": "wishi-f28f3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130238802097:android:b4eef708321e566da7da90",
+        "android_client_info": {
+          "package_name": "com.example.wishi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130238802097-s3m89cndjim08debbm9qflp8507nia0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7GWzCiz67SLfPi9MDpxDNwQk_KNirAe0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130238802097-s3m89cndjim08debbm9qflp8507nia0a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "130238802097-fl6vbqh49fqcgvbnh22mneq6cn0euise.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.wishi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130238802097:android:3e94f6664b8b16efa7da90",
+        "android_client_info": {
+          "package_name": "com.example.wishi_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130238802097-s3m89cndjim08debbm9qflp8507nia0a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7GWzCiz67SLfPi9MDpxDNwQk_KNirAe0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130238802097-s3m89cndjim08debbm9qflp8507nia0a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "130238802097-fl6vbqh49fqcgvbnh22mneq6cn0euise.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.wishi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
