@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Chrome",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--web-browser-flag=--no-incognito",
+                "--web-browser-flag=--user-data-dir=${env:HOME}/Library/Application Support/Google/Chrome/Default"
+            ]
+        }
+    ]
+}

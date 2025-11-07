@@ -73,7 +73,8 @@ class DefaultFirebaseOptions {
     projectId: 'wishi-f28f3',
     databaseURL: 'https://wishi-f28f3-default-rtdb.firebaseio.com',
     storageBucket: 'wishi-f28f3.firebasestorage.app',
-    iosClientId: '130238802097-8cjteccdvt07ufce7k4m8v5nkb1pprtn.apps.googleusercontent.com',
+    iosClientId:
+        '130238802097-8cjteccdvt07ufce7k4m8v5nkb1pprtn.apps.googleusercontent.com',
     iosBundleId: 'com.example.wishiApp',
   );
 }

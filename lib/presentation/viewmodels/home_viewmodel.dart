@@ -1,30 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/repositories/menu_repository_impl.dart';
-import '../../domain/models/category.dart';
-import '../../domain/repositories/menu_repository.dart';
-import '../../domain/usecases/get_categories.dart';
+import 'package:wishi_app/domain/models/category.dart';
+import 'package:wishi_app/domain/usecases/get_menu.dart';
+import 'package:wishi_app/application/providers.dart';
 
-// 2. Providers
-final menuRepositoryProvider = Provider<MenuRepository>((ref) {
-  return MenuRepositoryImpl();
-});
-
-final getCategoriesProvider = Provider<GetCategories>((ref) {
+final getMenuProvider = Provider<GetMenu>((ref) {
   final repository = ref.watch(menuRepositoryProvider);
-  return GetCategories(repository);
+  return GetMenu(repository);
 });
 
-// 3. ViewModel
-class HomeViewModel extends AsyncNotifier<List<MenuCategory>> {
-  @override
-  Future<List<MenuCategory>> build() async {
-    // This method will be called automatically to fetch the initial state.
-    // Riverpod handles the loading and error states.
-    final getCategories = ref.watch(getCategoriesProvider);
-    return getCategories();
-  }
-}
+final menuStreamProvider = StreamProvider<List<Category>>((ref) {
+  final getMenu = ref.watch(getMenuProvider);
+  return getMenu();
+});
 
-// 4. ViewModel Provider
-final homeViewModelProvider =
-    AsyncNotifierProvider<HomeViewModel, List<MenuCategory>>(HomeViewModel.new);
+final menuFutureProvider = FutureProvider<List<Category>>((ref) {
+  final getMenu = ref.watch(getMenuProvider);
+  return getMenu().first;
+});

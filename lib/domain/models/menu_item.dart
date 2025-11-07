@@ -1,3 +1,5 @@
+import 'package:wishi_app/domain/models/menu_item_option.dart';
+
 // Represents a single item on the menu (e.g., a specific taco or drink).
 class MenuItem {
   final String id;
@@ -6,7 +8,8 @@ class MenuItem {
   final double price;
   final List<String> tags;
   final bool available;
-  // final List<MenuItemOption> options;
+  final String? imageUrl;
+  final List<MenuItemOption> options;
 
   MenuItem({
     required this.id,
@@ -15,6 +18,7 @@ class MenuItem {
     required this.price,
     required this.tags,
     required this.available,
-    // required this.options,
+    this.imageUrl,
+    required this.options,
   });
 }

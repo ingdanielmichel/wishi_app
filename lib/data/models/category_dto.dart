@@ -6,11 +6,7 @@ class MenuCategoryDTO {
   final String name;
   final int order;
 
-  MenuCategoryDTO({
-    required this.id,
-    required this.name,
-    required this.order,
-  });
+  MenuCategoryDTO({required this.id, required this.name, required this.order});
 
   factory MenuCategoryDTO.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
@@ -21,11 +17,12 @@ class MenuCategoryDTO {
     );
   }
 
-  MenuCategory toDomain() {
-    return MenuCategory(
+  Category toDomain() {
+    return Category(
       id: id,
       name: name,
       order: order,
+      items: [], // The Category model requires an items list.
     );
   }
 }
