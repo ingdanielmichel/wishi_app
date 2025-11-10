@@ -7,6 +7,7 @@ import 'package:wishi_app/domain/models/menu_item_option.dart';
 import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
 import 'package:wishi_app/presentation/views/order_builder/create_order_screen.dart';
+import 'package:wishi_app/presentation/widgets/add_to_existing_order_dialog.dart';
 import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
 
 class MenuItemOptionCard extends ConsumerWidget {
@@ -23,20 +24,55 @@ class MenuItemOptionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateOrderScreen(
-              initialOrderItem: OrderItem(
-                id: const Uuid().v4(),
-                menuItemId: menuItem.id,
-                name: menuItem.name,
-                quantity: 1,
-                price: menuItem.price + option.priceModifier,
-                selectedOption: option,
-              ),
-            ),
-          ),
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Add Item'),
+              content: const Text('What would you like to do?'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Create a New Order'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateOrderScreen(
+                          initialOrderItem: OrderItem(
+                            id: const Uuid().v4(),
+                            menuItemId: menuItem.id,
+                            name: menuItem.name,
+                            quantity: 1,
+                            price: menuItem.price + option.priceModifier,
+                            selectedOption: option,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                TextButton(
+                  child: const Text('Add to an Existing Order'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the first dialog
+                    final newItem = OrderItem(
+                      id: const Uuid().v4(),
+                      menuItemId: menuItem.id,
+                      name: menuItem.name,
+                      quantity: 1,
+                      price: menuItem.price + option.priceModifier,
+                      selectedOption: option,
+                    );
+                    showDialog(
+                      context: context,
+                      builder: (context) => AddToExistingOrderDialog(newItem: newItem),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
       child: Card(
