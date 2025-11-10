@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wishi_app/application/providers.dart';
+import 'package:wishi_app/presentation/views/order_builder/create_order_screen.dart';
 import 'package:wishi_app/presentation/views/order_details_screen.dart';
 
 class OrderBuilderScreen extends ConsumerWidget {
@@ -29,7 +30,7 @@ class OrderBuilderScreen extends ConsumerWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const OrderDetailsScreen(),
+                                builder: (context) => const CreateOrderScreen(),
                               ),
                             );
                           },
