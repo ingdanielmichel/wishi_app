@@ -16,4 +16,22 @@ class OrderItem {
     required this.price,
     this.selectedOption,
   });
+
+  OrderItem copyWith({
+    String? id,
+    String? menuItemId,
+    String? name,
+    int? quantity,
+    double? price,
+    MenuItemOption? selectedOption,
+  }) {
+    return OrderItem(
+      id: id ?? this.id,
+      menuItemId: menuItemId ?? this.menuItemId,
+      name: name ?? this.name,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      selectedOption: selectedOption ?? this.selectedOption,
+    );
+  }
 }

@@ -14,4 +14,20 @@ class Order {
     required this.items,
     required this.total,
   });
+
+  Order copyWith({
+    String? id,
+    String? userId,
+    String? name,
+    List<OrderItem>? items,
+    double? total,
+  }) {
+    return Order(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      name: name ?? this.name,
+      items: items ?? this.items,
+      total: total ?? this.total,
+    );
+  }
 }
