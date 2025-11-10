@@ -8,6 +8,6 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   Future<void> signInAnonymously() async {
-    var userCredential = await _firebaseAuth.signInAnonymously();
+    await _firebaseAuth.signInAnonymously();
   }
 }

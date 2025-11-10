@@ -14,6 +14,8 @@ import 'package:wishi_app/presentation/viewmodels/order_builder/order_builder_vi
 import 'package:wishi_app/presentation/viewmodels/order_builder/order_builder_state.dart';
 import 'package:wishi_app/presentation/viewmodels/order_creation/order_creation_viewmodel.dart';
 import 'package:wishi_app/presentation/viewmodels/order_creation/order_creation_state.dart';
+import 'package:wishi_app/presentation/viewmodels/profile/profile_viewmodel.dart';
+import 'package:wishi_app/presentation/viewmodels/profile/profile_state.dart';
 
 // Data Layer
 final firestoreProvider =
@@ -26,7 +28,7 @@ final authRepositoryProvider = Provider<IAuthRepository>(
     (ref) => AuthRepositoryImpl(ref.watch(firebaseAuthProvider)));
 
 final orderRepositoryProvider = Provider<IOrderRepository>(
-    (ref) => OrderRepositoryImpl(ref.watch(firestoreProvider)));
+    (ref) => OrderRepositoryImpl(ref.watch(firestoreProvider), ref.watch(firebaseAuthProvider)));
 
 final menuRepositoryProvider = Provider<MenuRepository>(
   (ref) => MenuRepositoryImpl(ref.watch(databaseProvider)),
@@ -48,3 +50,7 @@ final orderBuilderViewModelProvider =
 final orderCreationViewModelProvider =
     NotifierProvider<OrderCreationViewModel, OrderCreationState>(
         OrderCreationViewModel.new);
+
+final profileViewModelProvider =
+    NotifierProvider<ProfileViewModel, ProfileState>(
+        ProfileViewModel.new);

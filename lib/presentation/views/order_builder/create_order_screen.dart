@@ -27,6 +27,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final firebaseAuth = ref.read(firebaseAuthProvider);
+    final userId = firebaseAuth.currentUser?.uid ?? '';
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create New Order'),
@@ -48,6 +51,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 _formKey.currentState!.save();
                 final newOrder = Order(
                   id: const Uuid().v4(),
+                  userId: userId,
                   name: _orderName,
                   items: _items,
                   total: _total,
@@ -91,7 +95,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => OrderItemSelectionScreen(
-                      order: Order(id: '', name: '', items: [], total: 0.0), // Dummy order
+                      order: Order(id: '', userId: userId, name: '', items: [], total: 0.0), // Dummy order
                       categories: categories,
                     ),
                   ),
@@ -132,7 +136,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => OrderItemSelectionScreen(
-                      order: Order(id: '', name: '', items: [], total: 0.0), // Dummy order
+                      order: Order(id: '', userId: userId, name: '', items: [], total: 0.0), // Dummy order
                       categories: categories,
                     ),
                   ),

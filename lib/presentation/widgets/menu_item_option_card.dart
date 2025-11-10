@@ -29,7 +29,7 @@ class MenuItemOptionCard extends ConsumerWidget {
           context,
           MaterialPageRoute(
             builder: (context) => OrderItemSelectionScreen(
-              order: Order(id: '', name: '', items: [], total: 0.0), // Dummy order
+              order: Order(id: '', name: '', items: [], total: 0.0, userId: ''), // Dummy order
               categories: categories,
               initialOrderItem: OrderItem(
                 id: const Uuid().v4(),
