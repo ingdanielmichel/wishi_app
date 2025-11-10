@@ -41,25 +41,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create New Order'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                final newOrder = Order(
-                  id: const Uuid().v4(),
-                  userId: userId,
-                  name: _orderName,
-                  items: _items,
-                  total: _total,
-                );
-                ref.read(orderBuilderViewModelProvider.notifier).createOrder(newOrder);
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Save Order'),
-          ),
-        ],
+        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -234,6 +216,27 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
               Text(
                 'Total: ${_total.toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      final newOrder = Order(
+                        id: const Uuid().v4(),
+                        userId: userId,
+                        name: _orderName,
+                        items: _items,
+                        total: _total,
+                      );
+                      ref.read(orderBuilderViewModelProvider.notifier).createOrder(newOrder);
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: const Text('Save Order'),
+                ),
               ),
             ],
           ),
