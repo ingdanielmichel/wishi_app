@@ -6,7 +6,7 @@ import 'package:wishi_app/domain/models/menu_item.dart';
 import 'package:wishi_app/domain/models/menu_item_option.dart';
 import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
-import 'package:wishi_app/presentation/views/order_item_selection_screen.dart';
+import 'package:wishi_app/presentation/views/order_builder/create_order_screen.dart';
 import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
 
 class MenuItemOptionCard extends ConsumerWidget {
@@ -22,15 +22,11 @@ class MenuItemOptionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () async {
-        final categories = await ref.read(menuFutureProvider.future);
-        if (!context.mounted) return;
+      onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderItemSelectionScreen(
-              order: Order(id: '', name: '', items: [], total: 0.0, userId: ''), // Dummy order
-              categories: categories,
+            builder: (context) => CreateOrderScreen(
               initialOrderItem: OrderItem(
                 id: const Uuid().v4(),
                 menuItemId: menuItem.id,

@@ -11,7 +11,8 @@ import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:wishi_app/application/providers.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
-  const CreateOrderScreen({super.key});
+  final OrderItem? initialOrderItem;
+  const CreateOrderScreen({super.key, this.initialOrderItem});
 
   @override
   ConsumerState<CreateOrderScreen> createState() => _CreateOrderScreenState();
@@ -27,6 +28,15 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   MenuItem? _selectedMenuItem;
   MenuItemOption? _selectedOption;
   int _quantity = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialOrderItem != null) {
+      _items.add(widget.initialOrderItem!);
+      _calculateTotal();
+    }
+  }
 
   void _calculateTotal() {
     _total = _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
