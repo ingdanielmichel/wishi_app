@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
-import 'package:wishi_app/domain/models/category.dart';
-import 'package:wishi_app/domain/models/menu_item.dart';
-import 'package:wishi_app/domain/models/menu_item_option.dart';
 import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
-import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
+import 'package:wishi_app/presentation/views/order_item_selection_screen.dart';
 import 'package:wishi_app/application/providers.dart';
 
 class OrderDetailsScreen extends ConsumerStatefulWidget {
@@ -25,13 +21,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   late double _total;
   late TextEditingController _nameController;
 
-  Category? _selectedCategory;
-  MenuItem? _selectedMenuItem;
-  MenuItemOption? _selectedOption;
-  int _quantity = 1;
-
-  OrderItem? _editingItem;
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +32,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   void _calculateTotal() {
     setState(() {
-      _total = _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+      _total = _items.fold(
+        0.0,
+        (sum, item) => sum + (item.price * item.quantity),
+      );
     });
   }
 
@@ -54,9 +46,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     final menuCategories = ref.watch(menuFutureProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Order'),
-      ),
+      appBar: AppBar(title: const Text('Edit Order')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -83,98 +73,25 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               ),
               const SizedBox(height: 20),
               menuCategories.when(
-                data: (categories) => Column(
-                  children: [
-                    // UI for adding a new item
-                    if (_editingItem == null) ...[
-                      DropdownButton<Category>(
-                        hint: const Text('Select Category'),
-                        value: _selectedCategory,
-                        onChanged: (Category? newValue) {
-                          setState(() {
-                            _selectedCategory = newValue;
-                            _selectedMenuItem = null;
-                            _selectedOption = null;
-                          });
-                        },
-                        items: categories.map<DropdownMenuItem<Category>>((Category category) {
-                          return DropdownMenuItem<Category>(
-                            value: category,
-                            child: Text(category.name),
-                          );
-                        }).toList(),
-                      ),
-                      if (_selectedCategory != null)
-                        DropdownButton<MenuItem>(
-                          hint: const Text('Select Item'),
-                          value: _selectedMenuItem,
-                          onChanged: (MenuItem? newValue) {
-                            setState(() {
-                              _selectedMenuItem = newValue;
-                              _selectedOption = null;
-                            });
-                          },
-                          items: _selectedCategory!.items.map<DropdownMenuItem<MenuItem>>((MenuItem item) {
-                            return DropdownMenuItem<MenuItem>(
-                              value: item,
-                              child: Text(item.name),
-                            );
-                          }).toList(),
+                data: (categories) => ElevatedButton(
+                  onPressed: () async {
+                    final newOrderItem = await Navigator.push<OrderItem>(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderItemSelectionScreen(
+                          order: widget.order,
+                          categories: categories,
                         ),
-                      if (_selectedMenuItem != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle_outline),
-                              onPressed: () {
-                                if (_quantity > 1) {
-                                  setState(() {
-                                    _quantity--;
-                                  });
-                                }
-                              },
-                            ),
-                            Text('$_quantity', style: Theme.of(context).textTheme.titleLarge),
-                            IconButton(
-                              icon: const Icon(Icons.add_circle_outline),
-                              onPressed: () {
-                                setState(() {
-                                  _quantity++;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      if (_selectedMenuItem != null)
-                        _buildOptionsSelector(_selectedMenuItem!.options),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: (_selectedMenuItem == null || _selectedOption == null)
-                            ? null
-                            : () {
-                                final newOrderItem = OrderItem(
-                                  id: const Uuid().v4(),
-                                  menuItemId: _selectedMenuItem!.id,
-                                  name: _selectedMenuItem!.name,
-                                  quantity: _quantity,
-                                  price: _selectedMenuItem!.price + _selectedOption!.priceModifier,
-                                  selectedOption: _selectedOption,
-                                );
-                                setState(() {
-                                  _items.add(newOrderItem);
-                                  _calculateTotal();
-                                  // Reset selection
-                                  _selectedCategory = null;
-                                  _selectedMenuItem = null;
-                                  _selectedOption = null;
-                                  _quantity = 1;
-                                });
-                              },
-                        child: const Text('Add Item'),
                       ),
-                    ],
-                  ],
+                    );
+                    if (newOrderItem != null) {
+                      setState(() {
+                        _items.add(newOrderItem);
+                        _calculateTotal();
+                      });
+                    }
+                  },
+                  child: const Text('Add Item'),
                 ),
                 loading: () => const CircularProgressIndicator(),
                 error: (err, stack) => Text('Error: $err'),
@@ -186,164 +103,53 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 itemCount: _items.length,
                 itemBuilder: (context, index) {
                   final item = _items[index];
-                  if (_editingItem == item) {
-                    // UI for editing an existing item
-                    return menuCategories.when(
-                      data: (categories) => Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              DropdownButton<Category>(
-                                hint: const Text('Select Category'),
-                                value: _selectedCategory,
-                                onChanged: (Category? newValue) {
-                                  setState(() {
-                                    _selectedCategory = newValue;
-                                    _selectedMenuItem = null;
-                                    _selectedOption = null;
-                                  });
-                                },
-                                items: categories.map<DropdownMenuItem<Category>>((Category category) {
-                                  return DropdownMenuItem<Category>(
-                                    value: category,
-                                    child: Text(category.name),
-                                  );
-                                }).toList(),
-                              ),
-                              if (_selectedCategory != null)
-                                DropdownButton<MenuItem>(
-                                  hint: const Text('Select Item'),
-                                  value: _selectedMenuItem,
-                                  onChanged: (MenuItem? newValue) {
-                                    setState(() {
-                                      _selectedMenuItem = newValue;
-                                      _selectedOption = null;
-                                    });
-                                  },
-                                  items: _selectedCategory!.items.map<DropdownMenuItem<MenuItem>>((MenuItem item) {
-                                    return DropdownMenuItem<MenuItem>(
-                                      value: item,
-                                      child: Text(item.name),
-                                    );
-                                  }).toList(),
-                                ),
-                              if (_selectedMenuItem != null)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline),
-                                      onPressed: () {
-                                        if (_quantity > 1) {
-                                          setState(() {
-                                            _quantity--;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                    Text('$_quantity', style: Theme.of(context).textTheme.titleLarge),
-                                    IconButton(
-                                      icon: const Icon(Icons.add_circle_outline),
-                                      onPressed: () {
-                                        setState(() {
-                                          _quantity++;
-                                        });
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              if (_selectedMenuItem != null)
-                                _buildOptionsSelector(_selectedMenuItem!.options),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _editingItem = null;
-                                      });
-                                    },
-                                    child: const Text('Cancel'),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: (_selectedMenuItem == null || _selectedOption == null)
-                                        ? null
-                                        : () {
-                                            final updatedItem = OrderItem(
-                                              id: item.id,
-                                              menuItemId: _selectedMenuItem!.id,
-                                              name: _selectedMenuItem!.name,
-                                              quantity: _quantity,
-                                              price: _selectedMenuItem!.price + _selectedOption!.priceModifier,
-                                              selectedOption: _selectedOption,
-                                            );
-                                            setState(() {
-                                              _items[index] = updatedItem;
-                                              _calculateTotal();
-                                              _editingItem = null;
-                                              // Reset selection
-                                              _selectedCategory = null;
-                                              _selectedMenuItem = null;
-                                              _selectedOption = null;
-                                              _quantity = 1;
-                                            });
-                                          },
-                                    child: const Text('Update Item'),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                  return ListTile(
+                    title: Text(item.name),
+                    subtitle: Text('Quantity: ${item.quantity}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '\$${(item.price * item.quantity).toStringAsFixed(2)}',
                         ),
-                      ),
-                      loading: () => const ListTile(title: Text('Loading...')),
-                      error: (err, stack) => ListTile(title: Text('Error: $err')),
-                    );
-                  } else {
-                    // UI for displaying an item
-                    return ListTile(
-                      title: Text(item.name),
-                      subtitle: Text('Quantity: ${item.quantity}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('\$${(item.price * item.quantity).toStringAsFixed(2)}'),
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () async {
+                            final categories = await ref.read(
+                              menuFutureProvider.future,
+                            );
+                            if (!context.mounted) return;
+
+                            final updatedItem = await Navigator.push<OrderItem>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderItemSelectionScreen(
+                                  order: widget.order,
+                                  categories: categories,
+                                  initialOrderItem: item,
+                                ),
+                              ),
+                            );
+                            if (updatedItem != null) {
                               setState(() {
-                                _editingItem = item;
-                                // Pre-fill the editing UI
-                                final categories = menuCategories.asData!.value;
-                                for (var category in categories) {
-                                  for (var menuItem in category.items) {
-                                    if (menuItem.id == item.menuItemId) {
-                                      _selectedCategory = category;
-                                      _selectedMenuItem = menuItem;
-                                      break;
-                                    }
-                                  }
-                                  if (_selectedMenuItem != null) break;
-                                }
-                                _selectedOption = item.selectedOption;
-                                _quantity = item.quantity;
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              setState(() {
-                                _items.removeAt(index);
+                                _items[index] = updatedItem;
                                 _calculateTotal();
                               });
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              _items.removeAt(index);
+                              _calculateTotal();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 20),
@@ -363,7 +169,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       items: _items,
                       total: _total,
                     );
-                    ref.read(orderBuilderViewModelProvider.notifier).updateOrder(updatedOrder);
+                    ref
+                        .read(orderBuilderViewModelProvider.notifier)
+                        .updateOrder(updatedOrder);
                     Navigator.pop(context);
                   }
                 },
@@ -373,23 +181,6 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildOptionsSelector(List<MenuItemOption> options) {
-    return Column(
-      children: options.map((option) {
-        return RadioListTile<MenuItemOption>(
-          title: Text(option.name),
-          value: option,
-          groupValue: _selectedOption,
-          onChanged: (MenuItemOption? value) {
-            setState(() {
-              _selectedOption = value;
-            });
-          },
-        );
-      }).toList(),
     );
   }
 }

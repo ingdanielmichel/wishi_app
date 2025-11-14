@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wishi_app/domain/models/category.dart';
 import 'package:wishi_app/presentation/widgets/category_tab_view.dart';
-import '../viewmodels/home_viewmodel.dart';
+import 'package:wishi_app/application/providers.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -17,7 +17,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    final asyncCategories = ref.watch(menuStreamProvider);
+    final asyncCategories = ref.watch(menuFutureProvider);
 
     return asyncCategories.when(
       data: (categories) {

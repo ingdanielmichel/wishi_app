@@ -1,4 +1,4 @@
-import 'package:wishi_app/domain/models/menu_item_option.dart';
+import 'package:wishi_app/domain/models/option_group.dart';
 
 // Represents a single item on the menu (e.g., a specific taco or drink).
 class MenuItem {
@@ -9,7 +9,7 @@ class MenuItem {
   final List<String> tags;
   final bool available;
   final String? imageUrl;
-  final List<MenuItemOption> options;
+  final List<OptionGroup> optionGroups;
 
   MenuItem({
     required this.id,
@@ -19,6 +19,6 @@ class MenuItem {
     required this.tags,
     required this.available,
     this.imageUrl,
-    required this.options,
+    required this.optionGroups,
   });
 }

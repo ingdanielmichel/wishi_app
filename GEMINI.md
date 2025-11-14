@@ -66,3 +66,5 @@ This document outlines the scaffolded application structure, which follows the M
 * IN the profile window, the users will be able to setup their users information and view the orders history.
 * A chat in a floating button will be available with an AI agent.
 * The mobile apps will be able to receive pop up with offers and deep links.
+* When clicking in the items from the menu, a dialog will pop up with details about the item and the option to create a new order with that item or add to an existing order.
+* Orders will be created in just one screen.

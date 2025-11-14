@@ -313,6 +313,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "12.0.4"
+  firebase_database_mocks:
+    dependency: "direct dev"
+    description:
+      name: firebase_database_mocks
+      sha256: e95b3b2b9cd03999cddbccdc6b19c11fbf947b85b8a6c8175d3dcfcefbe70997
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.1"
   firebase_database_platform_interface:
     dependency: transitive
     description:
@@ -528,6 +536,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  mockito:
+    dependency: transitive
+    description:
+      name: mockito
+      sha256: "2314cbe9165bcd16106513df9cf3c3224713087f09723b128928dc11a4379f99"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.0"
   node_preamble:
     dependency: transitive
     description:
@@ -584,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  radio_group_v2:
+    dependency: "direct main"
+    description:
+      name: radio_group_v2
+      sha256: a2f4d5fb26509cdb659c079d478c44c2f8ac8f61330633dfe3663d594ab77adf
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.1"
   riverpod:
     dependency: transitive
     description:
@@ -633,10 +657,10 @@ packages:
     dependency: transitive
     description:
       name: source_gen
-      sha256: "800f12fb87434defa13432ab37e33051b43b290a174e15259563b043cda40c46"
+      sha256: "7b19d6ba131c6eb98bfcbf8d56c1a7002eba438af2e7ae6f8398b2b0f4f381e3"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "3.1.0"
   source_map_stack_trace:
     dependency: transitive
     description:

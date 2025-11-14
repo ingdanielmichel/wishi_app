@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:wishi_app/domain/models/category.dart';
-import 'package:wishi_app/domain/models/menu_item.dart';
-import 'package:wishi_app/domain/models/menu_item_option.dart';
 import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
-import 'package:wishi_app/presentation/views/order_item_selection_screen.dart';
-import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
+import 'package:wishi_app/domain/models/category.dart';
+import 'package:wishi_app/domain/models/menu_item.dart';
+import 'package:wishi_app/domain/models/option_group.dart';
+import 'package:wishi_app/presentation/viewmodels/item_selection_viewmodel.dart';
+import 'package:wishi_app/presentation/widgets/order_item_card.dart';
 import 'package:wishi_app/application/providers.dart';
 
 class CreateOrderScreen extends ConsumerStatefulWidget {
@@ -23,11 +23,7 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   String _orderName = '';
   final List<OrderItem> _items = [];
   double _total = 0.0;
-
-  Category? _selectedCategory;
-  MenuItem? _selectedMenuItem;
-  MenuItemOption? _selectedOption;
-  int _quantity = 1;
+  bool _isAddingItem = false;
 
   @override
   void initState() {
@@ -39,7 +35,17 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
   }
 
   void _calculateTotal() {
-    _total = _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+    _total = _items.fold(
+      0.0,
+      (sum, item) => sum + (item.price * item.quantity),
+    );
+  }
+
+  void _resetAddItemForm() {
+    ref.read(itemSelectionViewModelProvider.notifier).reset();
+    setState(() {
+      _isAddingItem = false;
+    });
   }
 
   @override
@@ -47,12 +53,12 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     final firebaseAuth = ref.read(firebaseAuthProvider);
     final userId = firebaseAuth.currentUser?.uid ?? '';
     final menuCategories = ref.watch(menuFutureProvider);
+    final itemSelectionState = ref.watch(itemSelectionViewModelProvider);
+    final itemSelectionNotifier =
+        ref.read(itemSelectionViewModelProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create New Order'),
-        actions: [],
-      ),
+      appBar: AppBar(title: const Text('Create New Order'), actions: []),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -77,100 +83,142 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              menuCategories.when(
-                data: (categories) => Column(
-                  children: [
-                    DropdownButton<Category>(
-                      hint: const Text('Select Category'),
-                      value: _selectedCategory,
-                      onChanged: (Category? newValue) {
-                        setState(() {
-                          _selectedCategory = newValue;
-                          _selectedMenuItem = null;
-                          _selectedOption = null;
-                        });
-                      },
-                      items: categories.map<DropdownMenuItem<Category>>((Category category) {
-                        return DropdownMenuItem<Category>(
-                          value: category,
-                          child: Text(category.name),
-                        );
-                      }).toList(),
-                    ),
-                    if (_selectedCategory != null)
-                      DropdownButton<MenuItem>(
-                        hint: const Text('Select Item'),
-                        value: _selectedMenuItem,
-                        onChanged: (MenuItem? newValue) {
-                          setState(() {
-                            _selectedMenuItem = newValue;
-                            _selectedOption = null;
-                          });
+              if (!_isAddingItem)
+                menuCategories.when(
+                  data: (categories) => ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _isAddingItem = true;
+                      });
+                    },
+                    child: const Text('Add Item'),
+                  ),
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, stack) => Text('Error: $err'),
+                ),
+              if (_isAddingItem)
+                menuCategories.when(
+                  data: (categories) => Column(
+                    children: [
+                      DropdownButton<Category>(
+                        hint: const Text('Select Category'),
+                        value: itemSelectionState.selectedCategory,
+                        onChanged: (Category? newValue) {
+                          itemSelectionNotifier.selectCategory(newValue);
                         },
-                        items: _selectedCategory!.items.map<DropdownMenuItem<MenuItem>>((MenuItem item) {
-                          return DropdownMenuItem<MenuItem>(
-                            value: item,
-                            child: Text(item.name),
+                        items: categories
+                            .map<DropdownMenuItem<Category>>(
+                                (Category category) {
+                          return DropdownMenuItem<Category>(
+                            value: category,
+                            child: Text(category.name),
                           );
                         }).toList(),
                       ),
-                    if (_selectedMenuItem != null)
+                      if (itemSelectionState.selectedCategory != null)
+                        DropdownButton<MenuItem>(
+                          hint: const Text('Select Item'),
+                          value: itemSelectionState.selectedMenuItem,
+                          onChanged: (MenuItem? newValue) {
+                            itemSelectionNotifier.selectMenuItem(newValue);
+                          },
+                          items: (itemSelectionState.selectedCategory!.items)
+                              .map<DropdownMenuItem<MenuItem>>(
+                                  (MenuItem item) {
+                            return DropdownMenuItem<MenuItem>(
+                              value: item,
+                              child: Text(item.name),
+                            );
+                          }).toList(),
+                        ),
+                      if (itemSelectionState.selectedMenuItem != null)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle_outline),
+                              onPressed: () {
+                                if (itemSelectionState.quantity > 1) {
+                                  itemSelectionNotifier
+                                      .setQuantity(itemSelectionState.quantity - 1);
+                                }
+                              },
+                            ),
+                            Text('${itemSelectionState.quantity}',
+                                style: Theme.of(context).textTheme.titleLarge),
+                            IconButton(
+                              icon: const Icon(Icons.add_circle_outline),
+                              onPressed: () {
+                                itemSelectionNotifier
+                                    .setQuantity(itemSelectionState.quantity + 1);
+                              },
+                            ),
+                          ],
+                        ),
+                      if (itemSelectionState.selectedMenuItem != null)
+                        _buildOptionsSelector(
+                            itemSelectionState.selectedMenuItem!.optionGroups),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.remove_circle_outline),
-                            onPressed: () {
-                              if (_quantity > 1) {
-                                setState(() {
-                                  _quantity--;
-                                });
-                              }
-                            },
+                          TextButton(
+                            onPressed: _resetAddItemForm,
+                            child: const Text('Cancel'),
                           ),
-                          Text('$_quantity', style: Theme.of(context).textTheme.titleLarge),
-                          IconButton(
-                            icon: const Icon(Icons.add_circle_outline),
-                            onPressed: () {
-                              setState(() {
-                                _quantity++;
-                              });
-                            },
+                          ElevatedButton(
+                            onPressed: (itemSelectionState.selectedMenuItem ==
+                                    null)
+                                ? null
+                                : () {
+                                    double optionsPrice = 0.0;
+                                    final selectedMenuItem =
+                                        itemSelectionState.selectedMenuItem!;
+                                    itemSelectionState.selectedOptions
+                                        .forEach((key, value) {
+                                      if (value is bool && value == true) {
+                                        // This is a checkbox option, 'key' is the option name
+                                        final option = selectedMenuItem.optionGroups
+                                            .expand((group) => group.options)
+                                            .firstWhere((o) => o.name == key,
+                                                orElse: () => throw Exception('Checkbox option not found: $key'));
+                                        optionsPrice += option.priceModifier;
+                                      } else if (value is String) {
+                                        // This is a radio button option, 'key' is the group ID, 'value' is the selected option name
+                                        final optionGroup = selectedMenuItem.optionGroups
+                                            .firstWhere((group) => group.id == key,
+                                                orElse: () => throw Exception('Option group not found: $key'));
+                                        final option = optionGroup.options
+                                            .firstWhere((o) => o.name == value,
+                                                orElse: () => throw Exception('Radio option not found: $value in group $key'));
+                                        optionsPrice += option.priceModifier;
+                                      }
+                                    });
+
+                                    final newOrderItem = OrderItem(
+                                      id: const Uuid().v4(),
+                                      menuItemId: selectedMenuItem.id,
+                                      name: selectedMenuItem.name,
+                                      quantity: itemSelectionState.quantity,
+                                      price:
+                                          selectedMenuItem.price + optionsPrice,
+                                      selectedOptions:
+                                          itemSelectionState.selectedOptions,
+                                    );
+                                    setState(() {
+                                      _items.add(newOrderItem);
+                                      _calculateTotal();
+                                    });
+                                    _resetAddItemForm();
+                                  },
+                            child: const Text('Confirm Add Item'),
                           ),
                         ],
-                      ),
-                    if (_selectedMenuItem != null)
-                      _buildOptionsSelector(_selectedMenuItem!.options),
-                  ],
+                      )
+                    ],
+                  ),
+                  loading: () => const CircularProgressIndicator(),
+                  error: (err, stack) => Text('Error: $err'),
                 ),
-                loading: () => const CircularProgressIndicator(),
-                error: (err, stack) => Text('Error: $err'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: (_selectedMenuItem == null || _selectedOption == null)
-                    ? null
-                    : () {
-                        final newOrderItem = OrderItem(
-                          id: const Uuid().v4(),
-                          menuItemId: _selectedMenuItem!.id,
-                          name: _selectedMenuItem!.name,
-                          quantity: _quantity,
-                          price: _selectedMenuItem!.price + _selectedOption!.priceModifier,
-                          selectedOption: _selectedOption,
-                        );
-                        setState(() {
-                          _items.add(newOrderItem);
-                          _calculateTotal();
-                          // Reset selection
-                          _selectedCategory = null;
-                          _selectedMenuItem = null;
-                          _selectedOption = null;
-                          _quantity = 1;
-                        });
-                      },
-                child: const Text('Add Item'),
-              ),
               const SizedBox(height: 20),
               ListView.builder(
                 shrinkWrap: true,
@@ -178,47 +226,20 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                 itemCount: _items.length,
                 itemBuilder: (context, index) {
                   final item = _items[index];
-                  return ListTile(
-                    title: Text(item.name),
-                    subtitle: Text('Quantity: ${item.quantity}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text((item.price * item.quantity).toStringAsFixed(2)),
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () async {
-                            final categories = await ref.read(menuFutureProvider.future);
-                            if (!context.mounted) return;
-                            final updatedItem = await Navigator.push<OrderItem>(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrderItemSelectionScreen(
-                                  order: Order(id: '', userId: userId, name: _orderName, items: [], total: 0.0),
-                                  categories: categories,
-                                  initialOrderItem: item,
-                                ),
-                              ),
-                            );
-                            if (updatedItem != null) {
-                              setState(() {
-                                _items[index] = updatedItem;
-                                _calculateTotal();
-                              });
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              _items.removeAt(index);
-                              _calculateTotal();
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                  return OrderItemCard(
+                    item: item,
+                    onQuantityChanged: (newQuantity) {
+                      setState(() {
+                        _items[index] = item.copyWith(quantity: newQuantity);
+                        _calculateTotal();
+                      });
+                    },
+                    onDelete: () {
+                      setState(() {
+                        _items.removeAt(index);
+                        _calculateTotal();
+                      });
+                    },
                   );
                 },
               ),
@@ -241,7 +262,9 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
                         items: _items,
                         total: _total,
                       );
-                      ref.read(orderBuilderViewModelProvider.notifier).createOrder(newOrder);
+                      ref
+                          .read(orderBuilderViewModelProvider.notifier)
+                          .createOrder(newOrder);
                       Navigator.pop(context);
                     }
                   },
@@ -255,19 +278,49 @@ class _CreateOrderScreenState extends ConsumerState<CreateOrderScreen> {
     );
   }
 
-  Widget _buildOptionsSelector(List<MenuItemOption> options) {
+  Widget _buildOptionsSelector(List<OptionGroup> optionGroups) {
+    final itemSelectionState = ref.watch(itemSelectionViewModelProvider);
+    final itemSelectionNotifier =
+        ref.read(itemSelectionViewModelProvider.notifier);
+
     return Column(
-      children: options.map((option) {
-        return RadioListTile<MenuItemOption>(
-          title: Text(option.name),
-          value: option,
-          groupValue: _selectedOption,
-          onChanged: (MenuItemOption? value) {
-            setState(() {
-              _selectedOption = value;
-            });
-          },
-        );
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: optionGroups.expand((group) {
+        List<Widget> groupWidgets = [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              group.name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ),
+        ];
+
+        if (group.selectionType == 'single') {
+          groupWidgets.addAll(group.options.map((option) {
+            return RadioListTile<String>(
+              title: Text(
+                  '${option.name} (+\$${option.priceModifier.toStringAsFixed(2)})'),
+              value: option.name,
+              groupValue: itemSelectionState.selectedOptions[group.id],
+              onChanged: (String? value) {
+                itemSelectionNotifier.selectSingleOption(group.id, value);
+              },
+            );
+          }));
+        } else { // Default to multiple selection (checkboxes)
+          groupWidgets.addAll(group.options.map((option) {
+            return CheckboxListTile(
+              title: Text(
+                  '${option.name} (+\$${option.priceModifier.toStringAsFixed(2)})'),
+              value: itemSelectionState.selectedOptions[option.name] ?? false,
+              onChanged: (bool? value) {
+                itemSelectionNotifier.toggleOption(option.name, value ?? false);
+              },
+            );
+          }));
+        }
+        return groupWidgets;
       }).toList(),
     );
   }

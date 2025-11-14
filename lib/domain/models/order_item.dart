@@ -1,4 +1,3 @@
-import 'package:wishi_app/domain/models/menu_item_option.dart';
 
 class OrderItem {
   final String id;
@@ -6,7 +5,7 @@ class OrderItem {
   final String name;
   final int quantity;
   final double price;
-  final MenuItemOption? selectedOption;
+  final Map<String, dynamic> selectedOptions;
 
   OrderItem({
     required this.id,
@@ -14,7 +13,7 @@ class OrderItem {
     required this.name,
     required this.quantity,
     required this.price,
-    this.selectedOption,
+    this.selectedOptions = const {},
   });
 
   OrderItem copyWith({
@@ -23,7 +22,7 @@ class OrderItem {
     String? name,
     int? quantity,
     double? price,
-    MenuItemOption? selectedOption,
+    Map<String, dynamic>? selectedOptions,
   }) {
     return OrderItem(
       id: id ?? this.id,
@@ -31,7 +30,7 @@ class OrderItem {
       name: name ?? this.name,
       quantity: quantity ?? this.quantity,
       price: price ?? this.price,
-      selectedOption: selectedOption ?? this.selectedOption,
+      selectedOptions: selectedOptions ?? this.selectedOptions,
     );
   }
 }

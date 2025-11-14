@@ -18,39 +18,56 @@ import 'package:wishi_app/presentation/viewmodels/profile/profile_viewmodel.dart
 import 'package:wishi_app/presentation/viewmodels/profile/profile_state.dart';
 
 // Data Layer
-final firestoreProvider =
-    Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance);
-final databaseProvider =
-    Provider<FirebaseDatabase>((ref) => FirebaseDatabase.instance);
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
+final firestoreProvider = Provider<FirebaseFirestore>(
+  (ref) => FirebaseFirestore.instance,
+);
+final databaseProvider = Provider<FirebaseDatabase>(
+  (ref) => FirebaseDatabase.instance,
+);
+final firebaseAuthProvider = Provider<FirebaseAuth>(
+  (ref) => FirebaseAuth.instance,
+);
 
 final authRepositoryProvider = Provider<IAuthRepository>(
-    (ref) => AuthRepositoryImpl(ref.watch(firebaseAuthProvider)));
+  (ref) => AuthRepositoryImpl(ref.watch(firebaseAuthProvider)),
+);
 
 final orderRepositoryProvider = Provider<IOrderRepository>(
-    (ref) => OrderRepositoryImpl(ref.watch(firestoreProvider), ref.watch(firebaseAuthProvider)));
+  (ref) => OrderRepositoryImpl(
+    ref.watch(firestoreProvider),
+    ref.watch(firebaseAuthProvider),
+  ),
+);
 
 final menuRepositoryProvider = Provider<MenuRepository>(
   (ref) => MenuRepositoryImpl(ref.watch(databaseProvider)),
 );
 
+final menuFutureProvider = FutureProvider((ref) async {
+  final menuRepository = ref.watch(menuRepositoryProvider);
+  return menuRepository.getMenu();
+});
+
 // Domain Layer
 
-final saveOrderUseCaseProvider =
-    Provider((ref) => SaveOrderUseCase(ref.watch(orderRepositoryProvider)));
+final saveOrderUseCaseProvider = Provider(
+  (ref) => SaveOrderUseCase(ref.watch(orderRepositoryProvider)),
+);
 
 final signInAnonymouslyUseCaseProvider = Provider(
-    (ref) => SignInAnonymouslyUseCase(ref.watch(authRepositoryProvider)));
+  (ref) => SignInAnonymouslyUseCase(ref.watch(authRepositoryProvider)),
+);
 
 // Presentation Layer
 final orderBuilderViewModelProvider =
     NotifierProvider<OrderBuilderViewModel, OrderBuilderState>(
-        OrderBuilderViewModel.new);
+      OrderBuilderViewModel.new,
+    );
 
 final orderCreationViewModelProvider =
     NotifierProvider<OrderCreationViewModel, OrderCreationState>(
-        OrderCreationViewModel.new);
+      OrderCreationViewModel.new,
+    );
 
 final profileViewModelProvider =
-    NotifierProvider<ProfileViewModel, ProfileState>(
-        ProfileViewModel.new);
+    NotifierProvider<ProfileViewModel, ProfileState>(ProfileViewModel.new);

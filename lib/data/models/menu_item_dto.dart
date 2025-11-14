@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wishi_app/data/models/menu_item_option_dto.dart';
+import 'package:wishi_app/data/models/option_group_dto.dart';
 import '../../domain/models/menu_item.dart';
 
 
@@ -10,7 +10,7 @@ class MenuItemDTO {
   final double price;
   final List<String> tags;
   final bool available;
-  final List<MenuItemOptionDTO> options;
+  final List<OptionGroupDTO> optionGroups;
 
   MenuItemDTO({
     required this.id,
@@ -19,15 +19,15 @@ class MenuItemDTO {
     required this.price,
     required this.tags,
     required this.available,
-    required this.options,
+    required this.optionGroups,
   });
 
   factory MenuItemDTO.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map<String, dynamic>;
-    var optionsData = data['options'] as List<dynamic>? ?? [];
-    List<MenuItemOptionDTO> options = optionsData
-        .map((optionData) =>
-            MenuItemOptionDTO.fromFirestore(optionData as Map<String, dynamic>))
+    var optionGroupsData = data['option_groups'] as List<dynamic>? ?? [];
+    List<OptionGroupDTO> optionGroups = optionGroupsData
+        .map((groupData) =>
+            OptionGroupDTO.fromFirestore(groupData as Map<String, dynamic>))
         .toList();
 
     return MenuItemDTO(
@@ -37,7 +37,7 @@ class MenuItemDTO {
       price: (data['price'] ?? 0).toDouble(),
       tags: List<String>.from(data['tags'] ?? []),
       available: data['available'] ?? false,
-      options: options,
+      optionGroups: optionGroups,
     );
   }
 
@@ -49,7 +49,7 @@ class MenuItemDTO {
       price: price,
       tags: tags,
       available: available,
-      options: options.map((dto) => dto.toDomain()).toList(),
+      optionGroups: optionGroups.map((dto) => dto.toDomain()).toList(),
     );
   }
 }

@@ -1,0 +1,226 @@
+{
+  "menus": [
+    {
+      "id": "menu_principal",
+      "name": "Menú Principal",
+      "active": true,
+      "categories": [
+        {
+          "id": "bebidas",
+          "name": "Bebidas",
+          "order": 6,
+          "items": [
+            {
+              "id": "agua_fresca",
+              "name": "Agua fresca",
+              "description": "Sabores naturales del día",
+              "price": 30,
+              "tags": ["natural", "fría"],
+              "available": true,
+              "options": [
+                {"name": "Horchata", "price_modifier": 0},
+                {"name": "Jamaica", "price_modifier": 0},
+                {"name": "Tamarindo", "price_modifier": 0},
+                {"name": "Melon", "price_modifier": 0},
+                {"name": "Limonada", "price_modifier": 0},
+                {"name": "Sandia", "price_modifier": 0},
+                {"name": "Guayaba", "price_modifier": 0}
+              ]
+            },
+            {
+              "id": "refresco",
+              "name": "Refresco",
+              "description": "Jarritos",
+              "price": 15,
+              "tags": ["frío", "embotellado"],
+              "available": true,
+              "options": [
+                {"name": "Limon", "price_modifier": 0},
+                {"name": "Mandarina", "price_modifier": 0},
+                {"name": "Manzana", "price_modifier": 0},
+                {"name": "Piña", "price_modifier": 0},
+                {"name": "Tamarindo", "price_modifier": 0},
+                {"name": "Toronja", "price_modifier": 0},
+                {"name": "Tuti Fruti", "price_modifier": 0},
+                {"name": "Uva", "price_modifier": 0}
+              ]
+            }
+          ]
+        },
+        {
+          "id": "conchas_rellenas",
+          "name": "Conchas rellenas",
+          "order": 5,
+          "items": [
+            {
+              "id": "concharrellenasalada",
+              "name": "Conchas rellenas salada",
+              "description": "Suaves conchas rellenas de carne",
+              "price": 70,
+              "tags": ["concha", "rellena"],
+              "available": true,
+              "options": [
+                {"name": "Suadero", "price_modifier": 40, "sub_options": [
+                  {"name": "Salsa especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Pastor", "price_modifier": 30, "sub_options": [
+                  {"name": "Salsa especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Chorizo", "price_modifier": 15, "sub_options": [
+                  {"name": "Salsa especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Lengua", "price_modifier": 50, "sub_options": [
+                  {"name": "Salsa especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Asada", "price_modifier": 20, "sub_options": [
+                  {"name": "Salsa especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]}
+              ]
+            },
+            {
+              "id": "concharrellenasaladadulce",
+              "name": "Conchas rellena dulces",
+              "description": "Concha rellenas dulces",
+              "price": 60,
+              "tags": ["conchas", "rellenas"],
+              "available": true,
+              "options": [
+                {"name": "Cajeta", "price_modifier": 5, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Chocolate", "price_modifier": 3, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Mermeladas", "price_modifier": 0, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Nata", "price_modifier": 0, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]}
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lonches",
+          "name": "Lonches",
+          "order": 4,
+          "items": [
+            {
+              "id": "lonches",
+              "name": "Lonches",
+              "description": "Lonches con la carne de la casa.",
+              "price": 35,
+              "tags": ["bolillo", "adobado"],
+              "available": true,
+              "options": [
+                {"name": "Suadero", "price_modifier": 40, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Pastor", "price_modifier": 30, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Chorizo", "price_modifier": 15, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Lengua", "price_modifier": 50, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Asada", "price_modifier": 20, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]}
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pan_dulce",
+          "name": "Pan dulce",
+          "order": 1,
+          "items": [
+            {
+              "id": "pan_dulce",
+              "name": "Pan dulce",
+              "description": "Pan dulce tradicional",
+              "price": 15,
+              "tags": ["tradicional", "dulce"],
+              "available": true,
+              "options": [
+                {"name": "Conchas", "price_modifier": 2, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Empanadas", "price_modifier": 5, "sub_options": [
+                  {"name": "Relleno Salado", "price_modifier": 3},
+                  {"name": "Relleno dulce", "price_modifier": 8}
+                ]},
+                {"name": "Orejas", "price_modifier": 3, "sub_options": [
+                  {"name": "Con chocolate, acordion", "price_modifier": 3},
+                  {"name": "Con cajeta", "price_modifier": 8}
+                ]},
+                {"name": "Donas", "price_modifier": 2, "sub_options": [
+                  {"name": "Topping especial", "price_modifier": 3},
+                  {"name": "De Temporada", "price_modifier": 8}
+                ]},
+                {"name": "Puerquito", "price_modifier": 2, "sub_options": [
+                  {"name": "Bañado en chocolate", "price_modifier": 3}
+                ]}
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tacos",
+          "name": "Tacos",
+          "order": 3,
+          "items": [
+            {
+              "id": "tacos",
+              "name": "Taco",
+              "description": "Tacos de la carne de la casa.",
+              "price": 25,
+              "tags": ["tacos", "tradicional"],
+              "available": true,
+              "options": [
+                {"name": "Suadero", "price_modifier": 5, "sub_options": [
+                  {"name": "Doble tortilla", "price_modifier": 3},
+                  {"name": "Queso", "price_modifier": 8}
+                ]},
+                {"name": "Pastor", "price_modifier": 0, "sub_options": [
+                  {"name": "Doble tortilla", "price_modifier": 3},
+                  {"name": "Queso", "price_modifier": 8}
+                ]},
+                {"name": "Chorizo", "price_modifier": 0, "sub_options": [
+                  {"name": "Doble tortilla", "price_modifier": 3},
+                  {"name": "Queso", "price_modifier": 8}
+                ]},
+                {"name": "Lengua", "price_modifier": 15,  "sub_options": [
+                  {"name": "Doble tortilla", "price_modifier": 3},
+                  {"name": "Queso", "price_modifier": 8}
+                ]},
+                {"name": "Asada", "price_modifier": 0,  "sub_options": [
+                  {"name": "Doble tortilla", "price_modifier": 3},
+                  {"name": "Queso", "price_modifier": 8}
+                ]}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

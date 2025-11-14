@@ -4,11 +4,9 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wishi_app/domain/models/menu_item.dart';
 import 'package:wishi_app/domain/models/menu_item_option.dart';
-import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
 import 'package:wishi_app/presentation/views/order_builder/create_order_screen.dart';
 import 'package:wishi_app/presentation/widgets/add_to_existing_order_dialog.dart';
-import 'package:wishi_app/presentation/viewmodels/home_viewmodel.dart';
 
 class MenuItemOptionCard extends ConsumerWidget {
   const MenuItemOptionCard({
@@ -45,7 +43,7 @@ class MenuItemOptionCard extends ConsumerWidget {
                             name: menuItem.name,
                             quantity: 1,
                             price: menuItem.price + option.priceModifier,
-                            selectedOption: option,
+                            selectedOptions: {option.name: option.name},
                           ),
                         ),
                       ),
@@ -62,7 +60,7 @@ class MenuItemOptionCard extends ConsumerWidget {
                       name: menuItem.name,
                       quantity: 1,
                       price: menuItem.price + option.priceModifier,
-                      selectedOption: option,
+                      selectedOptions: {option.name: option.name},
                     );
                     showDialog(
                       context: context,

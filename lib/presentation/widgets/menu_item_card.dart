@@ -76,9 +76,9 @@ class MenuItemCard extends StatelessWidget {
                       .headlineSmall
                       ?.copyWith(color: Colors.white),
                 ),
-                if (item.options.isNotEmpty)
+                if (item.optionGroups.isNotEmpty)
                   Text(
-                    item.options.map((option) => option.name).join(', '),
+                    item.optionGroups.expand((group) => group.options).map((option) => option.name).join(', '),
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall

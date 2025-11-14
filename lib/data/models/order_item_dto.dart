@@ -1,4 +1,3 @@
-import 'package:wishi_app/data/models/menu_item_option_dto.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
 
 class OrderItemDTO {
@@ -7,7 +6,7 @@ class OrderItemDTO {
   final String name;
   final int quantity;
   final double price;
-  final MenuItemOptionDTO? selectedOption;
+  final Map<String, dynamic> selectedOptions;
 
   OrderItemDTO({
     required this.id,
@@ -15,7 +14,7 @@ class OrderItemDTO {
     required this.name,
     required this.quantity,
     required this.price,
-    this.selectedOption,
+    this.selectedOptions = const {},
   });
 
   factory OrderItemDTO.fromDomain(OrderItem orderItem) {
@@ -25,9 +24,7 @@ class OrderItemDTO {
       name: orderItem.name,
       quantity: orderItem.quantity,
       price: orderItem.price,
-      selectedOption: orderItem.selectedOption != null
-          ? MenuItemOptionDTO.fromDomain(orderItem.selectedOption!)
-          : null,
+      selectedOptions: orderItem.selectedOptions,
     );
   }
 
@@ -38,7 +35,7 @@ class OrderItemDTO {
       name: name,
       quantity: quantity,
       price: price,
-      selectedOption: selectedOption?.toDomain(),
+      selectedOptions: selectedOptions,
     );
   }
 
@@ -49,9 +46,7 @@ class OrderItemDTO {
       name: data['name'] ?? '',
       quantity: data['quantity'] ?? 0,
       price: (data['price'] ?? 0).toDouble(),
-      selectedOption: data['selectedOption'] != null
-          ? MenuItemOptionDTO.fromFirestore(data['selectedOption'])
-          : null,
+      selectedOptions: (data['selectedOptions'] as Map<String, dynamic>?) ?? {},
     );
   }
 
@@ -62,7 +57,7 @@ class OrderItemDTO {
       'name': name,
       'quantity': quantity,
       'price': price,
-      'selectedOption': selectedOption?.toFirestore(),
+      'selectedOptions': selectedOptions,
     };
   }
 }

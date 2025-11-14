@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wishi_app/application/providers.dart';
-import 'package:wishi_app/domain/models/order.dart';
 import 'package:wishi_app/domain/models/order_item.dart';
 
 class AddToExistingOrderDialog extends ConsumerWidget {
@@ -29,7 +28,7 @@ class AddToExistingOrderDialog extends ConsumerWidget {
                       return ListTile(
                         title: Text(order.name),
                         onTap: () {
-                          final updatedItems = List<OrderItem>.from(order.items)..add(newItem);
+                          final updatedItems = List<OrderItem>.from(order.items)..add(newItem.copyWith());
                           final updatedOrder = order.copyWith(
                             items: updatedItems,
                             total: order.total + (newItem.price * newItem.quantity),
