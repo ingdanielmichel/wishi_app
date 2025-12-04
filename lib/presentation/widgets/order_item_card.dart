@@ -31,10 +31,7 @@ class OrderItemCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: onDelete,
-                ),
+                IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
               ],
             ),
             const SizedBox(height: 8.0),

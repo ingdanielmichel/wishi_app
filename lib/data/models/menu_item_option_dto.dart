@@ -1,4 +1,3 @@
-
 import 'package:wishi_app/domain/models/menu_item_option.dart';
 
 class MenuItemOptionDTO {
@@ -34,7 +33,9 @@ class MenuItemOptionDTO {
     return MenuItemOptionDTO(
       name: option.name,
       priceModifier: option.priceModifier,
-      subOptions: option.subOptions.map((subOption) => MenuItemOptionDTO.fromDomain(subOption)).toList(),
+      subOptions: option.subOptions
+          .map((subOption) => MenuItemOptionDTO.fromDomain(subOption))
+          .toList(),
     );
   }
 

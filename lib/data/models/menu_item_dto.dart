@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wishi_app/data/models/option_group_dto.dart';
 import '../../domain/models/menu_item.dart';
 
-
 class MenuItemDTO {
   final String id;
   final String name;
@@ -26,8 +25,10 @@ class MenuItemDTO {
     Map data = doc.data() as Map<String, dynamic>;
     var optionGroupsData = data['option_groups'] as List<dynamic>? ?? [];
     List<OptionGroupDTO> optionGroups = optionGroupsData
-        .map((groupData) =>
-            OptionGroupDTO.fromFirestore(groupData as Map<String, dynamic>))
+        .map(
+          (groupData) =>
+              OptionGroupDTO.fromFirestore(groupData as Map<String, dynamic>),
+        )
         .toList();
 
     return MenuItemDTO(

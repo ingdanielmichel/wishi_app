@@ -21,9 +21,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     return asyncCategories.when(
       data: (categories) {
-        if (_tabController == null || _tabController!.length != categories.length) {
+        if (_tabController == null ||
+            _tabController!.length != categories.length) {
           _tabController?.dispose();
-          _tabController = TabController(length: categories.length, vsync: this);
+          _tabController = TabController(
+            length: categories.length,
+            vsync: this,
+          );
         }
 
         return Scaffold(
@@ -47,12 +51,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           ),
         );
       },
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
-      error: (err, stack) => Scaffold(
-        body: Center(child: Text('Error: $err')),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
     );
   }
 

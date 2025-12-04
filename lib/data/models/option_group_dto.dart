@@ -17,7 +17,10 @@ class OptionGroupDTO {
   factory OptionGroupDTO.fromFirestore(Map<String, dynamic> data) {
     var optionsData = data['options'] as List<dynamic>? ?? [];
     List<OptionDTO> options = optionsData
-        .map((optionData) => OptionDTO.fromFirestore(optionData as Map<String, dynamic>))
+        .map(
+          (optionData) =>
+              OptionDTO.fromFirestore(optionData as Map<String, dynamic>),
+        )
         .toList();
 
     return OptionGroupDTO(

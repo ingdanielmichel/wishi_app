@@ -13,7 +13,6 @@ class CategoryTabView extends StatefulWidget {
 
 class _CategoryTabViewState extends State<CategoryTabView>
     with AutomaticKeepAliveClientMixin {
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -23,11 +22,8 @@ class _CategoryTabViewState extends State<CategoryTabView>
       itemBuilder: (context, index) {
         final item = widget.category.items[index];
         return Padding(
-          padding:
-              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: MenuItemCard(
-            item: item,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: MenuItemCard(item: item),
         );
       },
     );

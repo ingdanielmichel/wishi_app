@@ -17,21 +17,24 @@ void main() {
   });
 
   group('getMenuStream', () {
-    test('should return a stream of categories when the call to firebase is successful', () async {
-      // arrange
-      final menuJson = json.decode(fixture('menu.json'));
-      MockFirebaseDatabase.instance.ref('menus').set(menuJson['menus']);
+    test(
+      'should return a stream of categories when the call to firebase is successful',
+      () async {
+        // arrange
+        final menuJson = json.decode(fixture('menu.json'));
+        MockFirebaseDatabase.instance.ref('menus').set(menuJson['menus']);
 
-      // act
-      final result = repository.getMenuStream();
+        // act
+        final result = repository.getMenuStream();
 
-      // assert
-      result.listen(
-        expectAsync1((categories) {
-          expect(categories, isA<List<Category>>());
-          expect(categories.length, 5);
-        }),
-      );
-    });
+        // assert
+        result.listen(
+          expectAsync1((categories) {
+            expect(categories, isA<List<Category>>());
+            expect(categories.length, 5);
+          }),
+        );
+      },
+    );
   });
 }

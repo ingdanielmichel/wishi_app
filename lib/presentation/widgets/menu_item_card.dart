@@ -13,9 +13,7 @@ class MenuItemCard extends StatelessWidget {
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
@@ -50,16 +48,8 @@ class MenuItemCard extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black54,
-                  Colors.black87,
-                ],
-                stops: const [
-                  0.5,
-                  0.8,
-                  1.0,
-                ],
+                colors: [Colors.transparent, Colors.black54, Colors.black87],
+                stops: const [0.5, 0.8, 1.0],
               ),
             ),
           ),
@@ -71,26 +61,26 @@ class MenuItemCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   item.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.headlineSmall?.copyWith(color: Colors.white),
                 ),
                 if (item.optionGroups.isNotEmpty)
                   Text(
-                    item.optionGroups.expand((group) => group.options).map((option) => option.name).join(', '),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.white70),
+                    item.optionGroups
+                        .expand((group) => group.options)
+                        .map((option) => option.name)
+                        .join(', '),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.white70),
                   ),
                 const SizedBox(height: 10),
                 Text(
                   '\$${item.price.toStringAsFixed(2)}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.white),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                 ),
               ],
             ),

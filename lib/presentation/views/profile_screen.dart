@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wishi_app/application/providers.dart';
+import 'package:wishi_app/presentation/views/order_builder/order_builder_screen.dart';
 import 'package:wishi_app/presentation/viewmodels/profile/profile_state.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -43,10 +44,18 @@ class ProfileScreen extends ConsumerWidget {
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: ListTile(
                               title: Text('Order #${order.id}'),
-                              subtitle: Text('Total: \${order.total.toStringAsFixed(2)}'),
+                              subtitle: Text(
+                                'Total: \${order.total.toStringAsFixed(2)}',
+                              ),
                               trailing: const Icon(Icons.arrow_forward_ios),
                               onTap: () {
-                                // Handle navigation to order details
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        OrderBuilderScreen(order: order),
+                                  ),
+                                );
                               },
                             ),
                           );

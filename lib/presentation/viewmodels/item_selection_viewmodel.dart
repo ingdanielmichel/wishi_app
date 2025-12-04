@@ -45,10 +45,7 @@ class ItemSelectionViewModel extends Notifier<ItemSelectionState> {
   }
 
   void selectMenuItem(MenuItem? menuItem) {
-    state = state.copyWith(
-      selectedMenuItem: menuItem,
-      selectedOptions: {},
-    );
+    state = state.copyWith(selectedMenuItem: menuItem, selectedOptions: {});
   }
 
   void toggleOption(String optionName, bool isSelected) {
@@ -75,8 +72,3 @@ class ItemSelectionViewModel extends Notifier<ItemSelectionState> {
     state = state.copyWith(selectedOptions: newSelectedOptions);
   }
 }
-
-final itemSelectionViewModelProvider =
-    NotifierProvider<ItemSelectionViewModel, ItemSelectionState>(
-  ItemSelectionViewModel.new,
-);

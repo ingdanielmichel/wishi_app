@@ -14,8 +14,7 @@ class MenuRepositoryImpl implements MenuRepository {
 
   @override
   Future<List<Category>> getMenu() async {
-    final snapshot =
-        await _database.ref('menus').get();
+    final snapshot = await _database.ref('menus').get();
     if (snapshot.exists) {
       log(snapshot.value.toString());
       return _parseCategories(snapshot.value);

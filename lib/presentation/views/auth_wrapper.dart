@@ -16,14 +16,10 @@ class AuthWrapper extends ConsumerWidget {
 
     return authInitializer.when(
       data: (_) => const MainScreen(),
-      loading: () => const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      error: (err, stack) => Scaffold(
-        body: Center(child: Text('Could not sign in: $err')),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
+      error: (err, stack) =>
+          Scaffold(body: Center(child: Text('Could not sign in: $err'))),
     );
   }
 }

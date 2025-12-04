@@ -10,6 +10,8 @@ import 'package:wishi_app/domain/repositories/menu_repository.dart';
 import 'package:wishi_app/domain/repositories/order_repository.dart';
 import 'package:wishi_app/domain/usecases/save_order_usecase.dart';
 import 'package:wishi_app/domain/usecases/sign_in_anonymously_usecase.dart';
+import 'package:wishi_app/presentation/viewmodels/item_selection_viewmodel.dart';
+import 'package:wishi_app/presentation/viewmodels/main_screen_viewmodel.dart';
 import 'package:wishi_app/presentation/viewmodels/order_builder/order_builder_viewmodel.dart';
 import 'package:wishi_app/presentation/viewmodels/order_builder/order_builder_state.dart';
 import 'package:wishi_app/presentation/viewmodels/order_creation/order_creation_viewmodel.dart';
@@ -59,6 +61,16 @@ final signInAnonymouslyUseCaseProvider = Provider(
 );
 
 // Presentation Layer
+final mainScreenIndexProvider =
+    NotifierProvider<MainScreenIndexNotifier, int>(
+  MainScreenIndexNotifier.new,
+);
+
+final itemSelectionViewModelProvider =
+    NotifierProvider<ItemSelectionViewModel, ItemSelectionState>(
+  ItemSelectionViewModel.new,
+);
+
 final orderBuilderViewModelProvider =
     NotifierProvider<OrderBuilderViewModel, OrderBuilderState>(
       OrderBuilderViewModel.new,

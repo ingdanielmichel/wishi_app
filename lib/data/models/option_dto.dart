@@ -14,9 +14,6 @@ class OptionDTO {
   }
 
   Option toDomain() {
-    return Option(
-      name: name,
-      priceModifier: priceModifier,
-    );
+    return Option(name: name, priceModifier: priceModifier);
   }
 }
