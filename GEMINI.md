@@ -68,3 +68,5 @@ This document outlines the scaffolded application structure, which follows the M
 * The mobile apps will be able to receive pop up with offers and deep links.
 * When clicking in the items from the menu, a dialog will pop up with details about the item and the option to create a new order with that item or add to an existing order.
 * Orders will be created in just one screen.
++ In the order builder, the orders saved will be displayed at the top and by clicking on it the users will be able to modify orders.
++ All options will be loaded after clicking on create a new order.

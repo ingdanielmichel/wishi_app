@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wishi_app/data/models/order_item_dto.dart';
-import 'package:wishi_app/domain/models/order.dart';
 
 class OrderDTO {
   final String id;
@@ -7,6 +7,9 @@ class OrderDTO {
   final String name;
   final List<OrderItemDTO> items;
   final double total;
+  final String status;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   OrderDTO({
     required this.id,
@@ -14,47 +17,36 @@ class OrderDTO {
     required this.name,
     required this.items,
     required this.total,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory OrderDTO.fromDomain(Order order) {
-    return OrderDTO(
-      id: order.id,
-      userId: order.userId,
-      name: order.name,
-      items: order.items.map((item) => OrderItemDTO.fromDomain(item)).toList(),
-      total: order.total,
-    );
-  }
+  factory OrderDTO.fromJson(Map<String, dynamic> json) => OrderDTO(
+    id: json['id'] as String? ?? '',
+    userId: json['user_id'] as String? ?? '',
+    name: json['name'] as String? ?? '',
+    items:
+        (json['items'] as List<dynamic>?)
+            ?.map(
+              (e) => OrderItemDTO.fromJson(Map<String, dynamic>.from(e as Map)),
+            )
+            .toList() ??
+        [],
+    total: (json['total'] as num?)?.toDouble() ?? 0.0,
+    status: json['status'] as String? ?? 'draft',
+    createdAt: (json['created_at'] as Timestamp?)?.toDate() ?? DateTime.now(),
+    updatedAt: (json['updated_at'] as Timestamp?)?.toDate() ?? DateTime.now(),
+  );
 
-  Order toDomain() {
-    return Order(
-      id: id,
-      userId: userId,
-      name: name,
-      items: items.map((dto) => dto.toDomain()).toList(),
-      total: total,
-    );
-  }
-
-  factory OrderDTO.fromFirestore(Map<String, dynamic> data) {
-    return OrderDTO(
-      id: data['id'] ?? '',
-      userId: data['userId'] ?? '',
-      name: data['name'] ?? '',
-      items: (data['items'] as List<dynamic>? ?? [])
-          .map((item) => OrderItemDTO.fromFirestore(item))
-          .toList(),
-      total: (data['total'] ?? 0).toDouble(),
-    );
-  }
-
-  Map<String, dynamic> toFirestore() {
-    return {
-      'id': id,
-      'userId': userId,
-      'name': name,
-      'items': items.map((item) => item.toFirestore()).toList(),
-      'total': total,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'user_id': userId,
+    'name': name,
+    'items': items.map((e) => e.toJson()).toList(),
+    'total': total,
+    'status': status,
+    'created_at': Timestamp.fromDate(createdAt),
+    'updated_at': Timestamp.fromDate(updatedAt),
+  };
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wishi_app/domain/models/category.dart';
 import 'package:wishi_app/presentation/widgets/category_tab_view.dart';
 import 'package:wishi_app/application/providers.dart';
+import 'package:wishi_app/presentation/widgets/user_avatar_button.dart';
+import 'package:wishi_app/presentation/widgets/cart_button_widget.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -32,7 +34,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Wishi Menu'),
+            title: GestureDetector(
+              onTap: () {
+                // Navigate back to home if not already there
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+              child: const Text(
+                'Wishi Menu',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.black54,
+                ),
+              ),
+            ),
+            actions: const [CartButton(), UserAvatarButton()],
             bottom: TabBar(
               controller: _tabController,
               tabs: categories.map((Category category) {

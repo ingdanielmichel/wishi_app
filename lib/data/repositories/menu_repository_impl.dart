@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:wishi_app/data/models/category_dto.dart';
+
 import 'package:wishi_app/domain/models/category.dart';
 import 'package:wishi_app/domain/models/menu_item.dart';
-import 'package:wishi_app/domain/models/option.dart';
-import 'package:wishi_app/domain/models/option_group.dart';
 import 'package:wishi_app/domain/repositories/menu_repository.dart';
 
 class MenuRepositoryImpl implements MenuRepository {
@@ -15,9 +15,9 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Future<List<Category>> getMenu() async {
     final snapshot = await _database.ref('menus').get();
-    if (snapshot.exists) {
+    if (snapshot.exists && snapshot.value != null) {
       log(snapshot.value.toString());
-      return _parseCategories(snapshot.value);
+      return _parseCategories(snapshot.value!);
     } else {
       return [];
     }
@@ -26,8 +26,8 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Stream<List<Category>> getMenuStream() {
     return _database.ref('menus').onValue.map((event) {
-      if (event.snapshot.exists) {
-        return _parseCategories(event.snapshot.value);
+      if (event.snapshot.exists && event.snapshot.value != null) {
+        return _parseCategories(event.snapshot.value!);
       } else {
         return [];
       }
@@ -35,52 +35,85 @@ class MenuRepositoryImpl implements MenuRepository {
   }
 
   List<Category> _parseCategories(dynamic categoriesValue) {
-    final menu = (categoriesValue as List<dynamic>).first;
-    final categoriesList = menu['categories'] as List<dynamic>;
-    final categories = categoriesList.map((categoryData) {
-      final categoryId = categoryData['id'];
-      final itemsList = categoryData['items'] as List<dynamic>? ?? [];
-      final items = itemsList.map((itemData) {
-        final itemId = itemData['id'];
-        final optionGroupsList =
-            itemData['option_groups'] as List<dynamic>? ?? [];
+    if (categoriesValue == null) return [];
 
-        final optionGroups = optionGroupsList.map((groupData) {
-          final optionsList = groupData['options'] as List<dynamic>? ?? [];
-          final options = optionsList.map((optionData) {
-            return Option(
-              name: optionData['name'] ?? '',
-              priceModifier: (optionData['price_modifier'] ?? 0).toDouble(),
-            );
-          }).toList();
+    // Handle case where categoriesValue might be a Map (if indices are keys) or List
+    final List<dynamic> rawMenu;
+    if (categoriesValue is List) {
+      rawMenu = categoriesValue;
+    } else if (categoriesValue is Map) {
+      rawMenu = categoriesValue.values.toList();
+    } else {
+      return [];
+    }
 
-          return OptionGroup(
-            id: groupData['id'] ?? '',
-            name: groupData['name'] ?? '',
-            selectionType: groupData['selection_type'] ?? 'single',
-            options: options,
-          );
-        }).toList();
+    // DEBUG LOG: Print first item structure to check for keys
+    if (rawMenu.isNotEmpty) {
+      log('Raw Menu First Item: ${rawMenu.first}');
+    }
 
-        return MenuItem(
-          id: itemId,
-          name: itemData['name'] ?? '',
-          description: itemData['description'] ?? '',
-          price: (itemData['price'] ?? 0).toDouble(),
-          tags: List<String>.from(itemData['tags'] ?? []),
-          available: itemData['available'] ?? false,
-          optionGroups: optionGroups,
-        );
-      }).toList();
+    if (rawMenu.isEmpty) return [];
 
-      return Category(
-        id: categoryId,
-        name: categoryData['name'] ?? '',
-        order: categoryData['order'] ?? 0,
-        items: items,
-      );
-    }).toList();
+    final firstItem = rawMenu.first;
+    if (firstItem == null) return [];
 
-    return categories..sort((a, b) => a.order.compareTo(b.order));
+    final Map<Object?, Object?>? menuData = firstItem is Map<Object?, Object?>
+        ? firstItem
+        : null;
+    if (menuData == null) return [];
+
+    final rawCategories = menuData['categories'];
+    if (rawCategories == null || rawCategories is! List) return [];
+
+    final categories = rawCategories
+        .map((categoryData) {
+          if (categoryData is Map) {
+            return CategoryDTO.fromJson(
+              Map<String, dynamic>.from(categoryData),
+            ).toDomain();
+          }
+          return null;
+        })
+        .whereType<Category>()
+        // Flatten items based on displayed options (via OptionGroups)
+        .map((category) {
+          final flattenedItems = <MenuItem>[];
+          for (final item in category.items) {
+            bool hasDisplayedOptions = false;
+
+            for (final group in item.optionGroups) {
+              // Check if the GROUP is set to display
+              if (group.display) {
+                hasDisplayedOptions = true;
+                for (final option in group.options) {
+                  // Create a new MenuItem for each option in this displayed group
+                  flattenedItems.add(
+                    item.copyWith(
+                      id: '${item.id}_${group.id}_${option.name.replaceAll(RegExp(r'\s+'), '_')}',
+                      name: option.name, // Use option name
+                      price: item.price + option.priceModifier, // Add modifier
+                      // Remove the group that this option belongs to, as it's now selected
+                      optionGroups: item.optionGroups
+                          .where((g) => g.id != group.id)
+                          .toList(),
+                    ),
+                  );
+                }
+              }
+            }
+
+            // If no option GROUPS are set to display, assume original item behavior.
+            // (Or if the item has no displayed groups, maybe we show the original item)
+            // Logic: If we generated cards from options, we probably don't want the original generic item.
+            // If we generated 0 cards, we MUST show the original item.
+            if (!hasDisplayedOptions) {
+              flattenedItems.add(item);
+            }
+          }
+          return category.copyWith(items: flattenedItems);
+        })
+        .toList();
+
+    return categories..sort((a, b) => (a.order ?? 0).compareTo(b.order ?? 0));
   }
 }

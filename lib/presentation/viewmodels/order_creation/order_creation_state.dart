@@ -1,11 +1,20 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+abstract class OrderCreationState {
+  const OrderCreationState();
+}
 
-part 'order_creation_state.freezed.dart';
+class InitialOrderCreationState extends OrderCreationState {
+  const InitialOrderCreationState();
+}
 
-@freezed
-abstract class OrderCreationState with _$OrderCreationState {
-  const factory OrderCreationState.initial() = _Initial;
-  const factory OrderCreationState.loading() = _Loading;
-  const factory OrderCreationState.success() = _Success;
-  const factory OrderCreationState.error(String message) = _Error;
+class LoadingOrderCreationState extends OrderCreationState {
+  const LoadingOrderCreationState();
+}
+
+class SuccessOrderCreationState extends OrderCreationState {
+  const SuccessOrderCreationState();
+}
+
+class ErrorOrderCreationState extends OrderCreationState {
+  final String message;
+  const ErrorOrderCreationState(this.message);
 }

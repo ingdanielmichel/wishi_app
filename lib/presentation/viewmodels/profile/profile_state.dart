@@ -1,15 +1,35 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wishi_app/domain/models/order.dart';
+import 'package:wishi_app/domain/models/user_profile.dart';
 
-part 'profile_state.freezed.dart';
+abstract class ProfileState {
+  const ProfileState();
+}
 
-@freezed
-abstract class ProfileState with _$ProfileState {
-  const factory ProfileState.initial() = _Initial;
-  const factory ProfileState.loading() = _Loading;
-  const factory ProfileState.loaded({
-    required String userEmail,
-    required List<Order> orderHistory,
-  }) = _Loaded;
-  const factory ProfileState.error(String message) = _Error;
+class InitialProfileState extends ProfileState {
+  const InitialProfileState();
+}
+
+class UnauthenticatedProfileState extends ProfileState {
+  const UnauthenticatedProfileState();
+}
+
+class LoadingProfileState extends ProfileState {
+  const LoadingProfileState();
+}
+
+class LoadedProfileState extends ProfileState {
+  final UserProfile userProfile;
+  final List<Order> orderHistory;
+  final bool isAnonymous;
+
+  const LoadedProfileState({
+    required this.userProfile,
+    required this.orderHistory,
+    this.isAnonymous = false,
+  });
+}
+
+class ErrorProfileState extends ProfileState {
+  final String message;
+  const ErrorProfileState(this.message);
 }

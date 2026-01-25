@@ -38,9 +38,20 @@ class OrderItemCard extends StatelessWidget {
             if (item.selectedOptions.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text(
-                  item.selectedOptions.values.join(', '),
-                  style: Theme.of(context).textTheme.bodyMedium,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: item.selectedOptions.entries.map((entry) {
+                    String valueStr;
+                    if (entry.value is List) {
+                      valueStr = (entry.value as List).join(', ');
+                    } else {
+                      valueStr = entry.value.toString();
+                    }
+                    return Text(
+                      '${entry.key}: $valueStr',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    );
+                  }).toList(),
                 ),
               ),
             const SizedBox(height: 8.0),

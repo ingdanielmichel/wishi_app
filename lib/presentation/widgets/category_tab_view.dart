@@ -23,7 +23,7 @@ class _CategoryTabViewState extends State<CategoryTabView>
         final item = widget.category.items[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: MenuItemCard(item: item),
+          child: MenuItemCard(item: item, categoryName: widget.category.name),
         );
       },
     );
